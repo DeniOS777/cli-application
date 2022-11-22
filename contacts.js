@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-// const { nanoid } = require('nanoid');
+const { v4: uuidv4 } = require('uuid');
 
 const contactsPath = path.resolve('./db/contacts.json');
 
@@ -41,7 +41,7 @@ function removeContact(contactId) {
 
 function addContact(name, email, phone) {
   const newContact = {
-    id: '15',
+    id: uuidv4(),
     name,
     email,
     phone,

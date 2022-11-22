@@ -1,6 +1,19 @@
 const fs = require('fs');
 const path = require('path');
+const { Command } = require('commander');
 // const { nanoid } = require('nanoid');
+
+const program = new Command();
+program
+  .option('-a, --action <type>', 'choose action')
+  .option('-i, --id <type>', 'user id')
+  .option('-n, --name <type>', 'user name')
+  .option('-e, --email <type>', 'user email')
+  .option('-p, --phone <type>', 'user phone');
+
+program.parse(process.argv);
+
+const argv = program.opts();
 
 const contactsPath = path.resolve('./db/contacts.json');
 
@@ -19,7 +32,7 @@ function getContactById(contactId) {
       return console.log('Not found contacts', error);
     }
     const contacts = JSON.parse(data);
-    return console.log(contacts.find(({ id }) => Number(id) === contactId));
+    return console.log(contacts.find(({ id }) => id === contactId));
   });
 }
 
@@ -29,7 +42,8 @@ function removeContact(contactId) {
       return console.log('Not found contacts', error);
     }
     const contacts = JSON.parse(data);
-    const restContacts = contacts.filter(({ id }) => Number(id) !== contactId);
+    const restContacts = contacts.filter(({ id }) => id !== contactId);
+
     fs.writeFile(contactsPath, JSON.stringify(restContacts), err => {
       if (err) throw err;
       console.table(restContacts);
@@ -46,9 +60,9 @@ function addContact(name, email, phone) {
     phone,
   };
 
-  fs.readFile(contactsPath, (error, data) => {
-    if (error) {
-      return console.log('Not found contacts', error);
+  fs.readFile(contactsPath, (err, data) => {
+    if (err) {
+      return console.log('Not found contacts', err);
     }
     const contacts = JSON.parse(data);
 

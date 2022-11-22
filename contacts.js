@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+// const { nanoid } = require('nanoid');
 
 const contactsPath = path.resolve('./db/contacts.json');
 
@@ -38,7 +39,28 @@ function removeContact(contactId) {
 }
 
 function addContact(name, email, phone) {
-  // ...твой код
+  const newContact = {
+    id: '15',
+    name,
+    email,
+    phone,
+  };
+
+  fs.readFile(contactsPath, (error, data) => {
+    if (error) {
+      return console.log('Not found contacts', error);
+    }
+    const contacts = JSON.parse(data);
+
+    fs.writeFile(
+      contactsPath,
+      JSON.stringify([...contacts, newContact]),
+      err => {
+        if (err) throw err;
+        return console.log('The file has been saved!');
+      }
+    );
+  });
 }
 
 const contactsActions = {

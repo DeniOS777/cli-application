@@ -21,5 +21,8 @@
   "homepage": "https://github.com/DeniOS777/cli-application#readme",
   "devDependencies": {
     "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "nanoid": "^4.0.0"
   }
 }

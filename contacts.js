@@ -5,18 +5,18 @@ const { v4: uuidv4 } = require('uuid');
 const contactsPath = path.resolve('./db/contacts.json');
 
 function listContacts() {
-  fs.readFile(contactsPath, (error, data) => {
-    if (error) {
-      return console.log('Not found contacts', error);
+  fs.readFile(contactsPath, (err, data) => {
+    if (err) {
+      return console.log('Not found contacts', err);
     }
     return console.table(JSON.parse(data));
   });
 }
 
 function getContactById(contactId) {
-  fs.readFile(contactsPath, (error, data) => {
-    if (error) {
-      return console.log('Not found contacts', error);
+  fs.readFile(contactsPath, (err, data) => {
+    if (err) {
+      return console.log('Not found contacts', err);
     }
     const contacts = JSON.parse(data);
     return console.log(contacts.find(({ id }) => id === contactId));
@@ -24,14 +24,16 @@ function getContactById(contactId) {
 }
 
 function removeContact(contactId) {
-  fs.readFile(contactsPath, (error, data) => {
-    if (error) {
-      return console.log('Not found contacts', error);
+  fs.readFile(contactsPath, (err, data) => {
+    if (err) {
+      return console.log('Not found contacts', err);
     }
     const contacts = JSON.parse(data);
     const restContacts = contacts.filter(({ id }) => id !== contactId);
 
-    fs.writeFile(contactsPath, JSON.stringify(restContacts), err => {
+    const payload = JSON.stringify(restContacts);
+
+    fs.writeFile(contactsPath, payload, err => {
       if (err) throw err;
       console.table(restContacts);
       return console.log('The file has been saved!');
@@ -53,14 +55,13 @@ function addContact(name, email, phone) {
     }
     const contacts = JSON.parse(data);
 
-    fs.writeFile(
-      contactsPath,
-      JSON.stringify([...contacts, newContact]),
-      err => {
-        if (err) throw err;
-        return console.log('The file has been saved!');
-      }
-    );
+    const payload = JSON.stringify([...contacts, newContact]);
+
+    fs.writeFile(contactsPath, payload, err => {
+      if (err) throw err;
+      console.table(JSON.parse(payload));
+      return console.log('The file has been saved!');
+    });
   });
 }
 

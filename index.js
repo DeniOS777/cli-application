@@ -17,19 +17,19 @@ const argv = program.opts();
 function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case 'list':
-      // ...
+      contactsActions.listContacts();
       break;
 
     case 'get':
-      // ... id
+      contactsActions.getContactById(id);
       break;
 
     case 'add':
-      // ... name email phone
+      contactsActions.addContact(name, email, phone);
       break;
 
     case 'remove':
-      // ... id
+      contactsActions.removeContact(id);
       break;
 
     default:
@@ -38,11 +38,3 @@ function invokeAction({ action, id, name, email, phone }) {
 }
 
 invokeAction(argv);
-
-// contactsActions.listContacts();
-
-// contactsActions.getContactById(10);
-
-// contactsActions.removeContact(2);
-
-// contactsActions.addContact('Poly', 'Poly@gmail.com', '131-343-534');

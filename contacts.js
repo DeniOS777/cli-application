@@ -1,68 +1,58 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 const contactsPath = path.resolve('./db/contacts.json');
 
-function listContacts() {
-  fs.readFile(contactsPath, (err, data) => {
-    if (err) {
-      return console.log('Not found contacts', err);
-    }
-    return console.table(JSON.parse(data));
-  });
+async function listContacts() {
+  try {
+    const contacts = await fs.readFile(contactsPath);
+    return console.table(JSON.parse(contacts));
+  } catch (err) {
+    return console.log('Not found contacts', err);
+  }
 }
 
-function getContactById(contactId) {
-  fs.readFile(contactsPath, (err, data) => {
-    if (err) {
-      return console.log('Not found contacts', err);
-    }
+async function getContactById(contactId) {
+  try {
+    const data = await fs.readFile(contactsPath);
     const contacts = JSON.parse(data);
-    return console.log(contacts.find(({ id }) => id === contactId));
-  });
+    const contactById = contacts.find(contact => contact.id === contactId);
+    return console.log(contactById);
+  } catch (err) {
+    return console.log('Not found contacts', err);
+  }
 }
 
-function removeContact(contactId) {
-  fs.readFile(contactsPath, (err, data) => {
-    if (err) {
-      return console.log('Not found contacts', err);
-    }
+async function removeContact(contactId) {
+  try {
+    const data = await fs.readFile(contactsPath);
     const contacts = JSON.parse(data);
     const restContacts = contacts.filter(({ id }) => id !== contactId);
-
     const payload = JSON.stringify(restContacts);
-
-    fs.writeFile(contactsPath, payload, err => {
-      if (err) throw err;
-      console.table(restContacts);
-      return console.log('The file has been saved!');
-    });
-  });
+    await fs.writeFile(contactsPath, payload);
+    return console.table(restContacts);
+  } catch (err) {
+    return console.log('Not found contacts', err);
+  }
 }
 
-function addContact(name, email, phone) {
-  const newContact = {
-    id: uuidv4(),
-    name,
-    email,
-    phone,
-  };
-
-  fs.readFile(contactsPath, (err, data) => {
-    if (err) {
-      return console.log('Not found contacts', err);
-    }
+async function addContact(name, email, phone) {
+  try {
+    const newContact = {
+      id: uuidv4(),
+      name,
+      email,
+      phone,
+    };
+    const data = await fs.readFile(contactsPath);
     const contacts = JSON.parse(data);
-
-    const payload = JSON.stringify([...contacts, newContact]);
-
-    fs.writeFile(contactsPath, payload, err => {
-      if (err) throw err;
-      console.table(JSON.parse(payload));
-      return console.log('The file has been saved!');
-    });
-  });
+    const newContacts = JSON.stringify([...contacts, newContact]);
+    await fs.writeFile(contactsPath, newContacts);
+    return console.table(JSON.parse(newContacts));
+  } catch (err) {
+    return console.log('Not found contacts', err);
+  }
 }
 
 const contactsActions = {
